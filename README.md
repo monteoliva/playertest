@@ -8,6 +8,7 @@ Projeto POC para exibir Vídeo com ExoPlayer em Jetpack Compose
 Tecnologias utilizadas
 ----------------------------------
 - Kotlin
+- Exoplayer
 - Injeção de Dependência em Dagger Hilt
 - Coroutines
 - Jetpack Compose
