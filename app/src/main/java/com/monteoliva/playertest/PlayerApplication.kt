@@ -1,4 +1,6 @@
 package com.monteoliva.playertest
 
-class PlayerApplication {
+import android.app.Application
+
+class PlayerApplication : Application() {
 }

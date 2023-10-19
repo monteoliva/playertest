@@ -6,10 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+
+import com.monteoliva.playertest.ui.player.VideoPlayer
 import com.monteoliva.playertest.ui.theme.PlayerTestTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,25 +22,25 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    initView()
                 }
             }
         }
     }
+
+    override fun onKeyDown(keyCode: Int, event: android.view.KeyEvent?): Boolean =
+        if (keyCode == android.view.KeyEvent.KEYCODE_BACK) {
+            finish()
+            true
+        }
+        else {
+            super.onKeyDown(keyCode, event)
+        }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
+private fun initView() {
+    VideoPlayer(
+        urlMedia = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PlayerTestTheme {
-        Greeting("Android")
-    }
 }
