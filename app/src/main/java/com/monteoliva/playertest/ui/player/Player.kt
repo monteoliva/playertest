@@ -36,17 +36,11 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-
-@Composable
-fun VideoPlayer(urlMedia: String) {
-    VideoPlayer(
-        uri = Uri.parse(Uri.decode(urlMedia))
-    )
-}
+import com.monteoliva.playertest.ui.components.ProgressBar
 
 @Composable
 @OptIn(UnstableApi::class)
-private fun VideoPlayer(uri: Uri, modifier: Modifier = Modifier) {
+fun VideoPlayer(uri: Uri, modifier: Modifier = Modifier) {
     val context   = LocalContext.current
     val mediaItem = MediaItem.Builder().setUri(uri).build()
     val exoPlayer = remember {
@@ -151,7 +145,6 @@ private fun PlayerControl(
     videoTitle: () -> String
 ) {
     val visible = remember(isVisible()) { isVisible() }
-
     AnimatedVisibility(
         modifier = modifier,
         visible  = visible,

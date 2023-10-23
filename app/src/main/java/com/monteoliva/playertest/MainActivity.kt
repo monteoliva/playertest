@@ -1,5 +1,6 @@
 package com.monteoliva.playertest
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,12 +20,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PlayerTestTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color    = MaterialTheme.colorScheme.background
                 ) {
-                    initView()
+                    InitView()
                 }
             }
         }
@@ -41,8 +41,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun initView() {
+private fun InitView() {
+    val urlMedia = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     VideoPlayer(
-        urlMedia = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        uri = Uri.parse(Uri.decode(urlMedia))
     )
 }

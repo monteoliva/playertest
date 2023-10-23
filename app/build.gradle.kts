@@ -64,8 +64,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
     // Exoplayer
-    implementation("androidx.media3:media3-exoplayer:1.2.0-alpha02")
-    implementation("androidx.media3:media3-ui:1.2.0-alpha02")
+    implementation("androidx.media3:media3-exoplayer:1.2.0-beta01")
+    implementation("androidx.media3:media3-ui:1.2.0-beta01")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")

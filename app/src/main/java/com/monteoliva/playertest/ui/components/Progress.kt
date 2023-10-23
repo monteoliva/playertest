@@ -1,4 +1,4 @@
-package com.monteoliva.playertest.ui.player
+package com.monteoliva.playertest.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
