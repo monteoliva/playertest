@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
 private fun InitView() {
     val urlMedia = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     VideoPlayer(
-        uri = Uri.parse(Uri.decode(urlMedia))
+        uri          = Uri.parse(Uri.decode(urlMedia)),
+        displayTitle = "Big Buck Bunny"
     )
 }

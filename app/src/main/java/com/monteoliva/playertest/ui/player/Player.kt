@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -25,10 +26,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.Listener
+import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
@@ -40,11 +44,25 @@ import com.monteoliva.playertest.ui.components.ProgressBar
 
 @Composable
 @OptIn(UnstableApi::class)
-fun VideoPlayer(uri: Uri, modifier: Modifier = Modifier) {
+fun VideoPlayer(
+    uri: Uri,
+    modifier: Modifier = Modifier,
+    displayTitle: String
+) {
     val context   = LocalContext.current
-    val mediaItem = MediaItem.Builder().setUri(uri).build()
+    val mediaItem = MediaItem.Builder().apply {
+        setUri(uri)
+        setMediaMetadata(
+            MediaMetadata.Builder().setDisplayTitle(displayTitle).build()
+        )
+    }
+    .build()
     val exoPlayer = remember {
         ExoPlayer.Builder(context)
+            .apply {
+                setSeekBackIncrementMs(PLAYER_SEEK_BACK_INCREMENT)
+                setSeekForwardIncrementMs(PLAYER_SEEK_FORWARD_INCREMENT)
+            }
             .build()
             .apply {
                 val defaultDataSourceFactory = DefaultDataSource.Factory(context)
@@ -58,20 +76,32 @@ fun VideoPlayer(uri: Uri, modifier: Modifier = Modifier) {
 
                 setMediaSource(source, 0)
                 prepare()
-                playWhenReady = true
+                playWhenReady    = true
+                videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
             }
     }
 
     val shouldShowControls = remember { mutableStateOf(false) }
     val loading            = remember { mutableStateOf(true)  }
     val title              = remember { mutableStateOf("")    }
+    val isPlaying          = remember { mutableStateOf(exoPlayer.isPlaying) }
+    val totalDuration      = remember { mutableStateOf(0L) }
+    val currentTime        = remember { mutableStateOf(0L) }
+    val bufferedPercentage = remember { mutableStateOf(0) }
+    val playbackState      = remember { mutableStateOf(exoPlayer.playbackState) }
 
     Box(modifier = modifier.background(Color.Black)) {
         DisposableEffect(key1 = Unit) {
             val listener = object: Listener {
                 override fun onEvents(player: Player, events: Player.Events) {
                     super.onEvents(player, events)
-
+                    player.also {
+                        totalDuration.value      = it.duration.coerceAtLeast(0L)
+                        currentTime.value        = it.currentPosition.coerceAtLeast(0L)
+                        bufferedPercentage.value = it.bufferedPercentage
+                        isPlaying.value          = it.isPlaying
+                        playbackState.value      = it.playbackState
+                    }
                 }
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                     Log.d("PlayerTest","playWhenReady: $playWhenReady - reason: $reason")
@@ -86,7 +116,7 @@ fun VideoPlayer(uri: Uri, modifier: Modifier = Modifier) {
                         }
                         Player.STATE_READY -> {
                             loading.value = false
-                            title.value   = exoPlayer.mediaMetadata.title.toString()
+                            title.value   = exoPlayer.mediaMetadata.displayTitle.toString()
                         }
                     }
                 }
@@ -104,10 +134,10 @@ fun VideoPlayer(uri: Uri, modifier: Modifier = Modifier) {
         }
 
         AndroidView(
-            modifier = Modifier.clickable { shouldShowControls.value = !shouldShowControls.value },
+            modifier = Modifier.clickable { shouldShowControls.value = shouldShowControls.value.not() },
             factory  = {
                 PlayerView(context).apply {
-                  //useController = false
+                    useController = false
                     resizeMode    = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     player        = exoPlayer
                     layoutParams  = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
@@ -115,49 +145,47 @@ fun VideoPlayer(uri: Uri, modifier: Modifier = Modifier) {
             }
         )
 
-        ProgressBar(loading.value)
-
-//        if (!loading.value) {
-//            PlayerControl(
-//                modifier   = Modifier.fillMaxSize(),
-//                isVisible  = { shouldShowControls.value },
-//                videoTitle = { title.value }
-//            )
-//        }
-    }
-}
-
-@Composable
-private fun ShowTitle(modifier: Modifier = Modifier, title: () -> String) {
-    val videoTitle = remember(title()) { title() }
-    Text(
-        modifier = modifier.padding(16.dp),
-        text     = videoTitle,
-        style    = MaterialTheme.typography.titleLarge,
-        color    = Color.White
-    )
-}
-
-@Composable
-private fun PlayerControl(
-    modifier: Modifier = Modifier,
-    isVisible: () -> Boolean,
-    videoTitle: () -> String
-) {
-    val visible = remember(isVisible()) { isVisible() }
-    AnimatedVisibility(
-        modifier = modifier,
-        visible  = visible,
-        enter    = fadeIn(),
-        exit     = fadeOut()
-    ) {
-        Box(modifier = Modifier.background(Color.Black.copy(alpha = 0.6f))) {
-            ShowTitle(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .fillMaxWidth(),
-                title = videoTitle
+        if (!loading.value) {
+            PlayerControl(
+                modifier       = Modifier.fillMaxSize(),
+                isVisible      = { shouldShowControls.value },
+                isPlaying      = { isPlaying.value },
+                title          = { title.value },
+                playbackState  = { playbackState.value },
+                onReplayClick  = {
+                    exoPlayer.seekBack()
+                    shouldShowControls.value = shouldShowControls.value.not()
+                },
+                onForwardClick = {
+                    exoPlayer.seekForward()
+                    shouldShowControls.value = shouldShowControls.value.not()
+                },
+                onPauseToggle  = {
+                    when {
+                        exoPlayer.isPlaying -> exoPlayer.pause()
+                        exoPlayer.isPlaying.not() &&
+                                playbackState.value == STATE_ENDED -> {
+                            exoPlayer.seekTo(0)
+                            exoPlayer.playWhenReady = true
+                        }
+                        else -> {
+                            exoPlayer.play()
+                            shouldShowControls.value = shouldShowControls.value.not()
+                        }
+                    }
+                    isPlaying.value = isPlaying.value.not()
+                },
+                totalDuration      = { totalDuration.value },
+                currentTime        = { currentTime.value },
+                bufferedPercentage = { bufferedPercentage.value },
+                onSeekChanged      = { timeMs: Float -> exoPlayer.seekTo(timeMs.toLong()) }
             )
         }
+
+        ProgressBar(loading.value)
     }
 }
+
+
+private const val PLAYER_SEEK_BACK_INCREMENT    = 5 * 1000L // 5 seconds
+private const val PLAYER_SEEK_FORWARD_INCREMENT = 10 * 1000L // 10 seconds
