@@ -87,7 +87,7 @@ fun VideoPlayer(
     val loading            = remember { mutableStateOf(true)  }
     val title              = remember { mutableStateOf("")    }
     val isPlaying          = remember { mutableStateOf(exoPlayer.isPlaying) }
-    val isFullScreen       = remember { mutableStateOf(false) }
+    val isFullScreen       = remember { mutableStateOf(true) }
     val totalDuration      = remember { mutableStateOf(0L) }
     val currentTime        = remember { mutableStateOf(0L) }
     val bufferedPercentage = remember { mutableStateOf(0) }
