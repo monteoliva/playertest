@@ -29,13 +29,14 @@ fun BottomControls(
     totalDuration: () -> Long,
     currentTime: () -> Long,
     bufferedPercentage: () -> Int,
-    onSeekChanged: (timeMs: Float) -> Unit
+    onSeekChanged: (timeMs: Float) -> Unit,
+    onFullScreen: () -> Unit
 ) {
 
-    val duration    = remember(totalDuration()) { totalDuration() }
-    val videoTime   = remember(currentTime()) { currentTime() }
-    val buffer      = remember(bufferedPercentage()) { bufferedPercentage() }
-    val current     = remember(currentTime()) { currentTime() }
+    val duration  = remember(totalDuration()) { totalDuration() }
+    val videoTime = remember(currentTime()) { currentTime() }
+    val buffer    = remember(bufferedPercentage()) { bufferedPercentage() }
+    val current   = remember(currentTime()) { currentTime() }
 
     Column(modifier = modifier.padding(bottom = 32.dp)) {
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -63,9 +64,7 @@ fun BottomControls(
         }
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
+            modifier              = Modifier.fillMaxWidth().padding(top = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -76,7 +75,7 @@ fun BottomControls(
 
             IconButton(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                onClick = {}
+                onClick  = onFullScreen
             ) {
                 Image(
                     contentScale       = ContentScale.Crop,
@@ -89,9 +88,8 @@ fun BottomControls(
 }
 
 fun Long.formatMinSec(): String {
-    return if (this == 0L) {
-        "..."
-    } else {
+    return if (this == 0L) { "..." }
+    else {
         String.format(
             "%02d:%02d",
             TimeUnit.MILLISECONDS.toMinutes(this),

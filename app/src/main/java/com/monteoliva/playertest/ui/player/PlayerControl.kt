@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
+@OptIn(ExperimentalAnimationApi::class)
 fun PlayerControl(
     modifier: Modifier = Modifier,
     isVisible: () -> Boolean,
@@ -39,11 +39,9 @@ fun PlayerControl(
         exit     = fadeOut()
     ) {
         Box(modifier = Modifier.background(Color.Black.copy(alpha = 0.6f))) {
-            ShowTitle(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .fillMaxWidth(),
-                title = title
+            TopControls(
+                modifier = Modifier.align(Alignment.TopStart).fillMaxWidth(),
+                title    = title
             )
 
             CenterControls(
@@ -60,19 +58,18 @@ fun PlayerControl(
                 Modifier.align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .animateEnterExit(
-                        enter =
-                        slideInVertically(
+                        enter = slideInVertically(
                             initialOffsetY = { fullHeight: Int -> fullHeight }
                         ),
-                        exit =
-                        slideOutVertically(
+                        exit = slideOutVertically(
                             targetOffsetY = { fullHeight: Int -> fullHeight }
                         )
                     ),
                 totalDuration      = totalDuration,
                 currentTime        = currentTime,
                 bufferedPercentage = bufferedPercentage,
-                onSeekChanged      = onSeekChanged
+                onSeekChanged      = onSeekChanged,
+                onFullScreen       = {}
             )
         }
     }
