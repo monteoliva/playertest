@@ -32,6 +32,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.Listener
+import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -78,6 +79,7 @@ fun VideoPlayer(
                 prepare()
                 playWhenReady    = true
                 videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+                repeatMode       = REPEAT_MODE_OFF
             }
     }
 
@@ -85,6 +87,7 @@ fun VideoPlayer(
     val loading            = remember { mutableStateOf(true)  }
     val title              = remember { mutableStateOf("")    }
     val isPlaying          = remember { mutableStateOf(exoPlayer.isPlaying) }
+    val isFullScreen       = remember { mutableStateOf(false) }
     val totalDuration      = remember { mutableStateOf(0L) }
     val currentTime        = remember { mutableStateOf(0L) }
     val bufferedPercentage = remember { mutableStateOf(0) }
@@ -138,9 +141,11 @@ fun VideoPlayer(
             factory  = {
                 PlayerView(context).apply {
                     useController = false
-                    resizeMode    = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     player        = exoPlayer
                     layoutParams  = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                    if (isFullScreen.value) {
+                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
                 }
             }
         )
@@ -179,7 +184,8 @@ fun VideoPlayer(
                 bufferedPercentage = { bufferedPercentage.value },
                 onSeekChanged      = { timeMs: Float -> exoPlayer.seekTo(timeMs.toLong()) },
                 onFullScreen       = {
-                    Log.d("TestePlayer", "onFullScreen: $it")
+                    isFullScreen.value       = isFullScreen.value.not()
+                    shouldShowControls.value = shouldShowControls.value.not()
                 }
             )
         }

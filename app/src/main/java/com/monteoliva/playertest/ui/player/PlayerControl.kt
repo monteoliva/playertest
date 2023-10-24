@@ -30,7 +30,7 @@ fun PlayerControl(
     bufferedPercentage: () -> Int,
     playbackState:      () -> Int,
     onSeekChanged:      (timeMs: Float) -> Unit,
-    onFullScreen:       (Boolean) -> Unit
+    onFullScreen:       () -> Unit
 ) {
     val visible = remember(isVisible()) { isVisible() }
     AnimatedVisibility(
@@ -70,7 +70,7 @@ fun PlayerControl(
                 currentTime        = currentTime,
                 bufferedPercentage = bufferedPercentage,
                 onSeekChanged      = onSeekChanged,
-                onFullScreen       = { onFullScreen.invoke(it) }
+                onFullScreen       = onFullScreen
             )
         }
     }
