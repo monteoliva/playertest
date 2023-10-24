@@ -19,13 +19,13 @@ import com.monteoliva.playertest.R
 @Composable
 fun CenterControls(
     modifier: Modifier = Modifier,
-    isPlaying: () -> Boolean,
-    playbackState: () -> Int,
-    onReplayClick: () -> Unit,
-    onPauseToggle: () -> Unit,
+    isPlaying:      () -> Boolean,
+    playbackState:  () -> Int,
+    onReplayClick:  () -> Unit,
+    onPauseToggle:  () -> Unit,
     onForwardClick: () -> Unit
 ) {
-    val isVideoPlaying = remember(isPlaying()) { isPlaying() }
+    val isVideoPlaying = remember(isPlaying())     { isPlaying() }
     val playerState    = remember(playbackState()) { playbackState() }
 
     Row(modifier = modifier, horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -40,10 +40,9 @@ fun CenterControls(
 
         IconButton(modifier = Modifier.size(40.dp), onClick = onPauseToggle) {
             Image(
-                modifier = Modifier.fillMaxSize(),
+                modifier     = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
-                painter =
-                when {
+                painter      = when {
                     isVideoPlaying -> {
                         painterResource(id = R.drawable.ic_pause)
                     }
@@ -60,9 +59,9 @@ fun CenterControls(
 
         IconButton(modifier = Modifier.size(40.dp), onClick = onForwardClick) {
             Image(
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.ic_forward_10),
+                modifier           = Modifier.fillMaxSize(),
+                contentScale       = ContentScale.Crop,
+                painter            = painterResource(id = R.drawable.ic_forward_10),
                 contentDescription = "Forward 10 seconds"
             )
         }
