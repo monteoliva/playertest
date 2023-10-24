@@ -10,7 +10,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TopControls(modifier: Modifier = Modifier, title: () -> String) {
+fun TopControls(
+    modifier: Modifier = Modifier,
+    title: () -> String
+) {
     val videoTitle = remember(title()) { title() }
     Text(
         modifier = modifier.padding(16.dp),

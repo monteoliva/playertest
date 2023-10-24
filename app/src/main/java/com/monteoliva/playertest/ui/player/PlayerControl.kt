@@ -19,17 +19,18 @@ import androidx.compose.ui.graphics.Color
 @OptIn(ExperimentalAnimationApi::class)
 fun PlayerControl(
     modifier: Modifier = Modifier,
-    isVisible: () -> Boolean,
-    isPlaying: () -> Boolean,
-    title: () -> String,
-    onReplayClick: () -> Unit,
-    onForwardClick: () -> Unit,
-    onPauseToggle: () -> Unit,
-    totalDuration: () -> Long,
-    currentTime: () -> Long,
+    isVisible:          () -> Boolean,
+    isPlaying:          () -> Boolean,
+    title:              () -> String,
+    onReplayClick:      () -> Unit,
+    onForwardClick:     () -> Unit,
+    onPauseToggle:      () -> Unit,
+    totalDuration:      () -> Long,
+    currentTime:        () -> Long,
     bufferedPercentage: () -> Int,
-    playbackState: () -> Int,
-    onSeekChanged: (timeMs: Float) -> Unit
+    playbackState:      () -> Int,
+    onSeekChanged:      (timeMs: Float) -> Unit,
+    onFullScreen:       (Boolean) -> Unit
 ) {
     val visible = remember(isVisible()) { isVisible() }
     AnimatedVisibility(
@@ -69,7 +70,7 @@ fun PlayerControl(
                 currentTime        = currentTime,
                 bufferedPercentage = bufferedPercentage,
                 onSeekChanged      = onSeekChanged,
-                onFullScreen       = {}
+                onFullScreen       = { onFullScreen.invoke(it) }
             )
         }
     }

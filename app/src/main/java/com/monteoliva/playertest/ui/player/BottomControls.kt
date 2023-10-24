@@ -26,17 +26,18 @@ import com.monteoliva.playertest.R
 @Composable
 fun BottomControls(
     modifier: Modifier = Modifier,
-    totalDuration: () -> Long,
-    currentTime: () -> Long,
+    totalDuration:      () -> Long,
+    currentTime:        () -> Long,
     bufferedPercentage: () -> Int,
-    onSeekChanged: (timeMs: Float) -> Unit,
-    onFullScreen: () -> Unit
+    onSeekChanged:      (timeMs: Float) -> Unit,
+    onFullScreen:       (Boolean) -> Unit
 ) {
 
-    val duration  = remember(totalDuration()) { totalDuration() }
-    val videoTime = remember(currentTime()) { currentTime() }
-    val buffer    = remember(bufferedPercentage()) { bufferedPercentage() }
-    val current   = remember(currentTime()) { currentTime() }
+    val duration   = remember(totalDuration())      { totalDuration() }
+    val videoTime  = remember(currentTime())        { currentTime() }
+    val buffer     = remember(bufferedPercentage()) { bufferedPercentage() }
+    val current    = remember(currentTime())        { currentTime() }
+    val fullScreen = remember { mutableStateOf(false) }
 
     Column(modifier = modifier.padding(bottom = 32.dp)) {
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -75,7 +76,7 @@ fun BottomControls(
 
             IconButton(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                onClick  = onFullScreen
+                onClick  = { onFullScreen.invoke(fullScreen.value.not()) }
             ) {
                 Image(
                     contentScale       = ContentScale.Crop,

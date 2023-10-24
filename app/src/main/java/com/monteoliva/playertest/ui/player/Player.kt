@@ -163,8 +163,7 @@ fun VideoPlayer(
                 onPauseToggle  = {
                     when {
                         exoPlayer.isPlaying -> exoPlayer.pause()
-                        exoPlayer.isPlaying.not() &&
-                                playbackState.value == STATE_ENDED -> {
+                        exoPlayer.isPlaying.not() && playbackState.value == STATE_ENDED -> {
                             exoPlayer.seekTo(0)
                             exoPlayer.playWhenReady = true
                         }
@@ -178,7 +177,10 @@ fun VideoPlayer(
                 totalDuration      = { totalDuration.value },
                 currentTime        = { currentTime.value },
                 bufferedPercentage = { bufferedPercentage.value },
-                onSeekChanged      = { timeMs: Float -> exoPlayer.seekTo(timeMs.toLong()) }
+                onSeekChanged      = { timeMs: Float -> exoPlayer.seekTo(timeMs.toLong()) },
+                onFullScreen       = {
+                    Log.d("TestePlayer", "onFullScreen: $it")
+                }
             )
         }
 
