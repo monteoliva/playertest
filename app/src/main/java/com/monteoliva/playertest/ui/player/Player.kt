@@ -32,6 +32,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.monteoliva.playertest.ui.components.ProgressBar
 
@@ -40,7 +41,8 @@ import com.monteoliva.playertest.ui.components.ProgressBar
 fun VideoPlayer(
     uri: Uri,
     modifier: Modifier = Modifier,
-    displayTitle: String
+    displayTitle: String,
+    viewModel: PlayerVideoViewModel = viewModel()
 ) {
     val context   = LocalContext.current
     val mediaItem = MediaItem.Builder().apply {
