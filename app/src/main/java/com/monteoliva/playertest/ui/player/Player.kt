@@ -1,5 +1,6 @@
 package com.monteoliva.playertest.ui.player
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -38,13 +39,38 @@ import com.monteoliva.playertest.ui.components.ProgressBar
 
 @Composable
 @OptIn(UnstableApi::class)
-fun VideoPlayer(
+fun VideoScreen(
     uri: Uri,
-    modifier: Modifier = Modifier,
     displayTitle: String,
     viewModel: PlayerVideoViewModel = viewModel()
 ) {
     val context   = LocalContext.current
+    val exoPlayer = remember(context) {
+        ExoPlayer.Builder(context)
+            .apply {
+                setSeekBackIncrementMs(PLAYER_SEEK_BACK_INCREMENT)
+                setSeekForwardIncrementMs(PLAYER_SEEK_FORWARD_INCREMENT)
+            }
+            .build()
+    }
+
+    VideoPlayer(
+        context      = context,
+        exoPlayer    = exoPlayer,
+        uri          = uri,
+        displayTitle = displayTitle
+    )
+}
+
+@Composable
+@OptIn(UnstableApi::class)
+private fun VideoPlayer(
+    modifier: Modifier = Modifier,
+    context: Context,
+    exoPlayer: ExoPlayer,
+    uri: Uri,
+    displayTitle: String
+) {
     val mediaItem = MediaItem.Builder().apply {
         setUri(uri)
         setMediaMetadata(
@@ -52,29 +78,21 @@ fun VideoPlayer(
         )
     }
     .build()
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context)
-            .apply {
-                setSeekBackIncrementMs(PLAYER_SEEK_BACK_INCREMENT)
-                setSeekForwardIncrementMs(PLAYER_SEEK_FORWARD_INCREMENT)
-            }
-            .build()
-            .apply {
-                val defaultDataSourceFactory = DefaultDataSource.Factory(context)
-                val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(
-                    context,
-                    defaultDataSourceFactory
-                )
-                val source = ProgressiveMediaSource
-                    .Factory(dataSourceFactory)
-                    .createMediaSource(mediaItem)
 
-                setMediaSource(source, 0)
-                prepare()
-                playWhenReady    = true
-                videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-                repeatMode       = REPEAT_MODE_OFF
-            }
+    val defaultDataSourceFactory              = DefaultDataSource.Factory(context)
+    val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(
+        context,
+        defaultDataSourceFactory
+    )
+
+    exoPlayer.apply {
+        addMediaSource(
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+        )
+        prepare()
+        playWhenReady    = true
+        videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+        repeatMode       = REPEAT_MODE_OFF
     }
 
     val shouldShowControls = remember { mutableStateOf(false) }
@@ -130,17 +148,21 @@ fun VideoPlayer(
             }
         }
 
+        val playerView = remember {
+            PlayerView(context).apply {
+                useController = false
+                player        = exoPlayer
+                layoutParams  = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                if (isFullScreen.value) {
+                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                }
+            }
+        }
+
         AndroidView(
             modifier = Modifier.clickable { shouldShowControls.value = shouldShowControls.value.not() },
             factory  = {
-                PlayerView(context).apply {
-                    useController = false
-                    player        = exoPlayer
-                    layoutParams  = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-                    if (isFullScreen.value) {
-                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    }
-                }
+                playerView
             }
         )
 

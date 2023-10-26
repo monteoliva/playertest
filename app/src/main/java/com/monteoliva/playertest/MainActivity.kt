@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 
-import com.monteoliva.playertest.ui.player.VideoPlayer
+import com.monteoliva.playertest.ui.player.VideoScreen
 import com.monteoliva.playertest.ui.theme.PlayerTestTheme
 
 @AndroidEntryPoint
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun InitView() {
     val urlMedia = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-    VideoPlayer(
+    VideoScreen(
         uri          = Uri.parse(Uri.decode(urlMedia)),
         displayTitle = "Big Buck Bunny"
     )
