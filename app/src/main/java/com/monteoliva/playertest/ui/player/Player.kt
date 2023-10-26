@@ -148,21 +148,17 @@ private fun VideoPlayer(
             }
         }
 
-        val playerView = remember {
-            PlayerView(context).apply {
-                useController = false
-                player        = exoPlayer
-                layoutParams  = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-                if (isFullScreen.value) {
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                }
-            }
-        }
-
         AndroidView(
             modifier = Modifier.clickable { shouldShowControls.value = shouldShowControls.value.not() },
             factory  = {
-                playerView
+                PlayerView(context).apply {
+                    useController = false
+                    player        = exoPlayer
+                    layoutParams  = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                    if (isFullScreen.value) {
+                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
+                }
             }
         )
 
