@@ -92,7 +92,7 @@ private fun VideoPlayer(
         prepare()
         playWhenReady    = true
         videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-        repeatMode       = REPEAT_MODE_OFF
+      //repeatMode       = REPEAT_MODE_OFF
     }
 
     val shouldShowControls = remember { mutableStateOf(false) }
