@@ -1,4 +1,4 @@
-package com.monteoliva.playertest.ui.player.control
+package com.monteoliva.playertest.ui.player.controls
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi

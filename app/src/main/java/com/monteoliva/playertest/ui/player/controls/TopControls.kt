@@ -1,4 +1,4 @@
-package com.monteoliva.playertest.ui.player.control
+package com.monteoliva.playertest.ui.player.controls
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme

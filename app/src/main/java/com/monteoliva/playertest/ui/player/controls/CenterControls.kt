@@ -1,4 +1,4 @@
-package com.monteoliva.playertest.ui.player.control
+package com.monteoliva.playertest.ui.player.controls
 
 import android.media.metrics.PlaybackStateEvent.STATE_ENDED
 import androidx.compose.foundation.Image

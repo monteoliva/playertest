@@ -1,4 +1,4 @@
-package com.monteoliva.playertest.ui.player.control
+package com.monteoliva.playertest.ui.player.controls
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

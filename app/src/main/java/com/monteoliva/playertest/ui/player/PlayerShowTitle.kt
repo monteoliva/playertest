@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.monteoliva.playertest.ui.player.control.TopControls
+import com.monteoliva.playertest.ui.player.controls.TopControls
 
 @Composable
 fun ShowTitle(
