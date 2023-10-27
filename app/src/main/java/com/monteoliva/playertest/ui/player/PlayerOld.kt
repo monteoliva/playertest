@@ -27,7 +27,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.monteoliva.playertest.ui.components.ProgressBar
-import com.monteoliva.playertest.ui.player.control.PlayerControls
+import com.monteoliva.playertest.ui.player.controls.PlayerControls
 
 @Composable
 @OptIn(UnstableApi::class)
