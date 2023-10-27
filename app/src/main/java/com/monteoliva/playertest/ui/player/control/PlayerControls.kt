@@ -1,4 +1,4 @@
-package com.monteoliva.playertest.ui.player
+package com.monteoliva.playertest.ui.player.control
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 @OptIn(ExperimentalAnimationApi::class)
-fun PlayerControl(
+fun PlayerControls(
     modifier: Modifier = Modifier,
     isVisible:          () -> Boolean,
     isPlaying:          () -> Boolean,

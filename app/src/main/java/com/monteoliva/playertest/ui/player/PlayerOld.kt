@@ -27,10 +27,11 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.monteoliva.playertest.ui.components.ProgressBar
+import com.monteoliva.playertest.ui.player.control.PlayerControls
 
 @Composable
 @OptIn(UnstableApi::class)
-fun VideoScreen(
+fun VideoScreenOld(
     uri: Uri,
     displayTitle: String,
     viewModel: PlayerViewModel = viewModel()
@@ -138,10 +139,43 @@ private fun VideoPlayer(
         }
 
         if (!loading.value) {
-            ShowTitle(
+            PlayerControls(
                 modifier      = Modifier.fillMaxSize(),
                 isVisible     = { shouldShowControls.value },
-                title         = { title.value }
+                isPlaying     = { isPlaying.value },
+                title         = { title.value },
+                playbackState = { playbackState.value },
+                onReplayClick = {
+                    exoPlayer.seekBack()
+                    shouldShowControls.value = shouldShowControls.value.not()
+                },
+                onForwardClick = {
+                    exoPlayer.seekForward()
+                    shouldShowControls.value = shouldShowControls.value.not()
+                },
+                onPauseToggle = {
+                    when {
+                        exoPlayer.isPlaying -> exoPlayer.pause()
+                        exoPlayer.isPlaying.not() && playbackState.value == STATE_ENDED -> {
+                            exoPlayer.seekTo(0)
+                            exoPlayer.playWhenReady = true
+                        }
+
+                        else -> {
+                            exoPlayer.play()
+                            shouldShowControls.value = shouldShowControls.value.not()
+                        }
+                    }
+                    isPlaying.value = isPlaying.value.not()
+                },
+                totalDuration      = { totalDuration.value },
+                currentTime        = { currentTime.value },
+                bufferedPercentage = { bufferedPercentage.value },
+                onSeekChanged      = { timeMs: Float -> exoPlayer.seekTo(timeMs.toLong()) },
+                onFullScreen       = {
+                    isFullScreen.value = isFullScreen.value.not()
+                    shouldShowControls.value = shouldShowControls.value.not()
+                }
             )
         }
 
